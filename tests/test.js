@@ -1,4 +1,4 @@
-const {By, Key, Builder, WebDriver, WebElement, Actions} = require("selenium-webdriver");
+let {By, Key, Builder, WebDriver, WebElement, Actions} = require("selenium-webdriver");
 const { elementIsDisabled } = require("selenium-webdriver/lib/until");
 require("chromedriver");
 require("geckodriver");
@@ -21,16 +21,29 @@ if(cDay < 10){
     cDay = "0" + cDay;
 }
 xPathToCalendar = "//body[@data-t-id='1']";
-todayXPath = "//a[@data-id='" + cDay + "-12-2022']";
+todayXPath = "//a[@data-id='" + cDay + "-12-2023']";
 console.log(todayXPath);
 
 // asynchronous functions wait for promise to be delivered
 async function fillOutForm(){
 
-    let driver = await new Builder().forBrowser("firefox").build();
+    let driver = await new Builder().forBrowser("chrome").build();
     const kauflandCalendar = "https://filiale.kaufland.de/highlights/adventskalender.html";
     await driver.get(kauflandCalendar);
     await driver.sleep(500);
+
+    // Find the button using a suitable locator, for example, by ID
+    let button = driver.findElement(By.id("onetrust-reject-all-handler"));
+
+    // Check if the button is displayed
+    if (await button.isDisplayed()) {
+        // Click the button
+        await driver.executeScript("arguments[0].click();", button);
+        console.log("Button clicked!");
+    } else {
+        console.log("Button not found or not displayed");
+    }
+
     // find todays door with xPath selection and click on it
     await driver.findElement(By.xpath(todayXPath)).click();
     await driver.sleep(500);
